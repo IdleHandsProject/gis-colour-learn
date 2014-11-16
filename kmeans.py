@@ -33,6 +33,7 @@ from sklearn import cross_validation
 from sklearn.naive_bayes import GaussianNB
 from sklearn.learning_curve import learning_curve
 from sklearn import preprocessing
+from cv2 import *
 
 from tempfile import TemporaryFile
 outfile = TemporaryFile()
@@ -260,15 +261,30 @@ def main():
 	print ("Creating Linear Graph")
 	clf = svm.SVC(C=100, gamma=1, verbose=2, cache_size=1000)
 	clf.fit(X, Y)
-	image = Image.open('10.jpg').convert('RGB')
-	k = Kmeans()
-	result = k.run(image)
-	print result
-	predict = clf.predict([result])
-	
-	colour = ['purple','blue','red','green','yellow']
-	print predict
-	print colour[predict] 
+	#image = Image.open('10.jpg').convert('RGB')
+	#print image
+	while(1):
+		raw_input("Press Enter to continue...")
+		cam = VideoCapture(0)  #set the port of the camera as before
+		retval, image = cam.read() #return a True bolean and and the image if all go right
+		
+		cam.release()
+		print image
+		#if retval:    # frame captured without any errors
+		#	namedWindow("cam-test",CV_WINDOW_AUTOSIZE)
+		#	imshow("cam-test",image)
+		#	waitKey(0)
+		#	destroyWindow("cam-test")
+		image = Image.fromarray(np.uint8(image)).convert('RGB')
+		enhancer = ImageEnhance.Brightness(image)
+		image = enhancer.enhance(20)
+		k = Kmeans()
+		result = k.run(image)
+		print result
+		predict = clf.predict([result])
+		colour = ['purple','blue','red','green','yellow']
+		print predict
+		print colour[predict] 
 	
 	
 
